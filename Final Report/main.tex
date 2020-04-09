@@ -1,0 +1,469 @@
+\documentclass[a4paper]{article}
+\usepackage[textheight=700pt,textwidth=465pt]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\begin{document}
+\title{Ultra-high frequency gravitational wave detection techniques and characterisation of bulk acoustic wave cavity detector data}
+\author{2256504G}
+\date{April 2020}
+\maketitle
+
+
+\begin{abstract}
+    Novel cryogenic quartz resonator technology has established the prospect of detection of ultra-high frequency gravitational waves. Following the positive identification of gravitational waves by the LIGO collaboration in 2015, there is hope that gravitational waves will be discovered at other frequency ranges. This study demonstrates and evaluates a number of digital signal analysis techniques for use in ultra-high frequency gravitational wave detection and compares the effect of these techniques on simulated noise signals and collected signal data from the bulk acoustic wave cavity detector at the University of Western Australia. Power spectral analysis, differencing and coincidence analysis are used to characterise the recorded detector data, and a cross-correlation detection method is discussed and demonstrated using a simulated pulse gravitational wave signal. From simulated coincidence analysis, we find that the background coincidence rate of the detector data is 11.44 per second for a threshold corresponding to 4.844 times the standard deviation of the noise. 
+
+\end{abstract}
+\tableofcontents
+
+\section{Introduction}\label{intro}
+
+The first direct detection of gravitational waves (GW) in September 2015 was made by advanced LIGO, of signals originating from a black hole merger event, GW150914 \cite{abbott2016observation}. aLIGO is sensitive in a low-frequency band, about 10Hz - 10kHz, and many events have since been detected in this region, yet GWs emitted at \textit{ultra high-frequency (UHF)} regions are yet to be identified. This study discusses detection techniques which may be used in the exploration of such higher domains, and to characterise data obtained from a cryogenic bulk acoustic wave (BAW) cavity detector at the University of Western Australia (UWA). 
+
+
+At present, the only apparatus suitable for UHFGW detection are resonant mass detectors, such as the one used to produce the data analysed in this study. Historically, resonant mass detectors have been used to attempt to detect GWs at lower frequencies. They were pioneered by J. Weber in the 1960s \cite{aguiarPresentFutureResonantMass}. His high-Q aluminium `Weber Bar' was designed to extend and contract in contact with incident GWs, and would be noticeably changed in size in the presence of waves at the bar's resonant frequency. The distortion of space-time and the constrictions of the inter-atomic forces in the solid's structure give rise to the changes in length which are converted to electrical signals using piezoelectric crystals \cite{aguiarPresentFutureResonantMass}. Weber's bar operated at room temperature, but the following iterations of resonant mass detectors took advantage of cryogenic cooling systems to limit system noise, and increase the resonating mass's quality factors. In the 1990s several large cryogenic bar detectors began operation around the world, such as NAUTILUS, EXPLORER and NIOBE. These each had resonant modes around 1kHz, weighed several tonnes and had higher sensitivities than their predecessors. GWs were never universally accepted to have been detected by these experiments, and their sensitivity has been surpassed by interferometer experiments such as LIGO. More recently,  spherical resonant-mass detectors have been developed, such as miniGRAIL at the University of Leiden which has a resonant mode around 3kHz \cite{dasilvacostaSphericalGravitationalWave2014}.
+These previous resonant mass detectors have so far only been sensitive in the low frequency GW region due to their high mass, so in order to detect UHFGWs a lighter approach must be considered. Sensitivity in resonant mass detectors is generally improved by increasing the mass of the resonant mass antenna, but noise reduction achieved by cooling to mK temperatures offsets this, and allows the exploration of `tabletop' sized detectors \cite{Tobar_2017ResurgenceGW} such as this  `cryogenic ultra-high quality factor quartz Bulk Acoustic Wave cavity technology'  responsible for the data analysed in this study. At the University of Western Australia this BAW cavity technology has been adapted to be used as a GW detector sensitive in the 1-1000MHz range, a region only otherwise explorable by advanced interferometry.  The BAW cavity is claimed to have higher sensitivities than these  interferometers, with a possibility of $10^{21}$ per $\sqrt{\mathrm{Hz}}$. \newline
+\newline
+The experimental set-up of the BAW cavity detector is described by Goryachev et al.  \cite{goryachev2014gravitational} and shown in Figure \ref{fig:BAW}.
+The BAW cavity system has other applications in fields such as quantum information and dark matter searches, and has been shown to have Q factors $10^{-9} - 10^{-10}$ in the MHz-GHz range.
+
+\begin{figure}[ht]
+\center
+\includegraphics[width=8cm]{images/BAW}
+\caption{Schematic of the BAW cavity experimental set-up. The resonant antenna (left) is coupled with low noise SQUID amplifiers which are near-quantum-limited when supercooled to 20mK, and the signal passed through a filter (right). Diagram taken from \cite{goryachev2014gravitational}. }
+\label{fig:BAW}
+\end{figure}
+
+
+In order to improve the sensitivity of the detector, Goryachev et al. propose the use of larger mass resonators, or using arrays of detectors \cite{goryachev2014gravitational}. The smaller size, compared to other GW detectors, enhances the future possibility for the latter of these suggestions. 
+
+
+
+
+\smallskip
+The GW sources under investigation here emit in the MHz to GHz range, higher frequencies than the GWs observable by LIGO and other low-frequency detectors (0.1 to 1kHz)\cite{goryachev2014gravitational}. GWs in this higher frequency range have not yet been detected but may provide an opportunity to learn about unobserved transient sources as well as predicted cosmological sources, as well as providing a means for testing some fundamental physics. 
+We can divide expected sources into two categories: \textit{discrete} and \textit{cosmological} \cite{cruise2012potential}. \textit{Discrete} sources produce transient signals such as those observed by LIGO, and may consist of astronomical phenomena such as:
+
+\begin{itemize}
+    \item Thermal gravitational radiation from stars: charged particles in the proton-electron plasma of stars may produce GW noise on a similar level of energy flux as that of the low frequency binary star GWs.
+   
+    
+    \item   Radiation from primordial black holes, which would have to be on the scale of centimetres to emit in the GHz range \cite{bisnovatyi2004very}.
+    
+    
+    \item `Graser beams': gravitational modes of plasma flows, where electromagnetic and gravitational waves in magnetised plasma may coherently interact \cite{servinResonantInteractionGravitational2003}.
+\end{itemize}
+
+
+\textit{Cosmological} sources may produce GW radiation originating from the very early universe, connected to hypothetical sources such as: pre-big bang scenarios, inflation and phase transitions. Quantum fluctuations, amplified over time by cosmological inflation, may be detectable as stochastic relic gravitational wave background radiation. Other sources may include breaking or decay of cosmic strings, superinflation due to loop quantum gravity, and brane-world radiation \cite{cruise2012potential}. Stochastic sources are predicted to produce very small amplitude signals, which will be difficult to separate from noise in the detector. The techniques discussed in this study are particularly concerned with this problem of low signal to noise ratio (SNR) data. 
+
+
+
+
+
+The nature of the sources of UHFGWs mean that the nature of the recorded signals dictate the sort of analysis techniques we may use. At present there is no published analysis of the data collected by the detector in question, yet there exist well known methods for extracting information from low SNR data and stochastic signals. The analysis methods used in this study are outlined in this report, and the behaviour of the data is presented and discussed. All analysis was carried out computationally using Python 3.7, with a combination of self-written algorithms, and functions in the Numpy and SciPy packages. Data visualisation was made using the matplotlib package. 
+
+\section{Data}\label{data}
+In this section there is a description of the data, or signals, which were recorded or constructed to be used in the later analysis techniques.
+
+
+\subsection{BAW cavity data}\label{data:BAW cavity data}
+Detector data was supplied by the University of West Australia and recorded by the BAW cavity detector in 2019.  The data set covers a time period of 40,000 seconds and was sampled at 100Hz (4M data points). The frequencies of the signals present in this data set are much lower than the prescribed ultra-high frequencies, which is due to a heterodyning process. The response time of a detector is typically much lower than the ultra-high frequency of signal received by the antenna, $f_1$, therefore this frequency is mixed with a very similar \textit{heterodyne frequency}, $f_2$, and produces a new signal with frequencies $(f_{1}\pm f_{2})$,  which are within the detector response time. Through this process we gain also phase data, in addition to amplitude of the signal. As a result of heterodyning, we have data in four channels demodulated by a lock-in amplifier, corresponding to the two quadratures from each of the two resonant modes of the BAW cavity antenna. The channels are: $X_0, Y_0, X_1$ and $ Y_1$, where $X_n$ and  $Y_n$ are the real and imaginary components of the signal respectively which can be combined to make complex signals \textit{0} and \textit{1}. The heterodyne frequencies are 5.505MHz and 8.3MHz for Signal 0 and Signal 1 respectively.\par
+\begin{figure}[ht]
+\center
+\includegraphics[width=9cm]{images/schematic}
+\caption{Simplified block diagram demonstrating the acquisition of BAW detector data through heterodyning. GW signal from the antenna at ultra high frequency $f_1$ is combined with the generated reference signal of frequency $f_2$ in the mixer at the centre of the diagram. Mixed frequency signals $f_1 \pm f_2 $ are passed to the lock-in amplifier where they are demodulated into our 4 channels.}
+\label{fig:schematic}
+\end{figure}
+
+
+Strain calibration information was not available, therefore we leave the amplitude of the signal in Volts. Amplitude - time plots for the four streams named above are shown in Figure \ref{fig:uwa_data}. One can see from the plot that Signal 0 is less regular than Signal 1, and exhibits a large disturbance in the last 10,000 seconds. This is unexplained but we proceed in some analyses steps only with Signal 1, as we believe the disturbance means Signal 0 data does not give an accurate representation of the signals under investigation.
+
+\begin{figure}[!htb]
+\centering
+    \begin{subfigure}{0.47\linewidth}
+\includegraphics[width=\linewidth]{images/uwa_43_x0.png} 
+    \caption{}
+\label{fig:x0}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.47\linewidth}
+\includegraphics[width=\linewidth]{images/uwa_43_y0.png}
+    \caption{}
+\label{fig:y0}
+    \end{subfigure}
+%     \end{figure}
+% \begin{figure}\ContinuedFloat
+    \begin{subfigure}{0.47\linewidth}
+\includegraphics[width=\linewidth]{images/uwa_43_x1.png}
+    \caption{}
+\label{fig:1a}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.47\linewidth}
+\includegraphics[width=\linewidth]{images/uwa_43_y1.png}
+    \caption{}
+\label{fig:y1}
+    \end{subfigure}
+\caption{Time-amplitude plots of raw BAW cavity detector data recorded at UWA. (a) and (b) contain the real and imaginary components of data stream \textit{Signal 0} with heterodyne frequency 5.505MHz, (c) and (d) are the two quadratures of \textit{Signal 1} with heterodyne frequency 8.3MHz. The signal was measured over 40,000 seconds with sampling frequency 100Hz. }
+    \label{fig:uwa_data}
+    \end{figure}
+
+
+\subsection{Gaussian noise data}\label{data:Gaussian noise data}
+A simulated stochastic data set was constructed in order to compare the behaviour of the recorded detector data with an equivalent signal of only random noise. Here, a  Gaussian noise signal was fabricated using a random number generator, covering the same time period and sampling frequency as the detector data, and with the same standard deviation. These measures mean that this Gaussian noise signal should emulate the behaviour of the detector data if the detector data was a random series within our parameters.
+\begin{figure}[!htb]
+\center
+\includegraphics[width=8cm]{images/gauss_amp.png}
+\caption{ - Time-amplitude plot of the simulated Gaussian noise signal. To allow comparison with the BAW detector data, the noise signal has the same standard deviation ($1.435$) and sampling frequency. }
+\label{fig:gauss_amp}
+\end{figure}
+
+% \subsection{Simulated discrete signals}
+% As described above, there are a number of astrophysical events which may cause transient `burst' GW signals in our sensitivity range, with certain characteristics. A number of these are also under investigation in low-frequency range GW astronomy \cite{abadie2012all}. Here, three of these are considered:
+% Gaussian pulse, 
+% sino-gaussian pulse, 
+% ringdown waveform.
+% These were modelled in 2D and the amplitude/frequency dependence with time is plotted, as seen in Figure \ref{fig:simTrans}.
+
+% \begin{figure}[ht]
+% \center
+% \includegraphics[width=8cm]{images/placeholder.pdf}
+% \caption{Place - simulated transients}
+% \label{fig:simTrans}
+% \end{figure}
+
+\section{Analysis methods}\label{Analysis methods}
+In this section we describe a number of digital signal analysis techniques relevant for the detection of ultra-high frequency waves, and how they were carried out in this study. The first three methods were used with the BAW cavity detector data, while the fourth (cross-correlation analysis) is concerned with the addition of fabricated GW signals to detector noise data. The result of these analyses are given in the Results section.
+
+\subsection{Power Spectral Density}\label{analysis:PSD}
+A time series signal contains components belonging to a range of frequencies, each with a power coefficient. Fast Fourier Transforms (FFT) can be used to break down the signal into these components in windows of finite width. The spectrum of power coefficients corresponding to these frequencies in the signal is approximated by the  power spectral density (PSD), which is useful when looking at continuous signals. The average power at a given frequency is given by the integral of the PSD over the time period. For discrete data such as that analysed here the average power may be obtained by summing instead of integration, which is less computationally efficient. 
+
+
+A PSD estimation allows us to smooth a signal and characterise the relative power of its frequency components. In this study Welch's method was used to calculate the PSD, which calculates the periodogram for each data segment and averages the segments. This method is popular due to its efficiency, as it uses the FFT \cite{solomonjr.PSDComputationsUsing1991}. In addition, Welch's method reduces the variance of the periodogram method by averaging the periodograms across time windows, which trades reduced frequency resolution for a decrease in noise in the power spectra \cite{welchUseFastFourier1967}. \par
+A plot of PSD against frequency allows us to see the distribution of power at the frequencies in the signal.
+In the case of our BAW cavity data, we know that the detector is most sensitive in its \textit{resonant mode frequency band} (as it is a resonant mass detector), and this is where the the peak power should appear.
+
+A two sided PSD plot includes the contribution of the complex components of the signal. The one sided PSD represents the signal power of frequencies up to  $\frac{f_n}{2}$, half the Nyquist frequency, while the two-sided PSD includes components up to $f_n$.
+The PSD plots are presented in Section \ref{res:psd}.
+
+
+\subsection{Spectrograms}\label{analysis:spectrograms}
+Another way of visualising the power frequency distribution in a signal is to plot a spectrogram. This technique represents the data in both frequency and time, where the power of the signal at a given frequency and time is represented by coloured pixels. It also allows us to identify pixels, and therefore time and frequency signatures, which satisfy certain criteria such as an energy threshold. When calculating the spectrogram, time and frequency are put into bins; bins sizes can be adjusted to improve resolution in either dimension by changing the length of FFT segments, the \textit{NFFT}, and this resolution is limited by $f_n$. For the majority of this study a resolution was chosen which was roughly equal in time and frequency, but for the coincidence analysis described in Section 3.4 the time sensitivity required a higher time resolution, thus the NFFT value was lowered. Spectrograms used in the analysis are shown in Section \ref{res:spectrograms}.
+
+
+\subsubsection{Normalisation}\label{analysis:normalisation}
+ Normalisation is a process which rescales a data set to some reference value. This shrinks the range of values which the pixels of an image will take. The spectrograms representing our data were normalised using the algorithm explained below, chosen due to its sensitivity to individual frequency bins, as some of our analysis techniques inspect frequency bands independently. In standard image processing a blanket normalisation factor is applied across the entire image but in this situation it would be biased by the much higher power in the resonant modes. For each row (frequency),  $i$, the element (pixel) at each time signature, $j$, is $p_{i,j}$. The normalised element is:
+\begin{equation}
+    p'_{ij}  = \frac{p_{ij}}{M_{i}}
+\end{equation}
+Where $M$ is the median power of the pixels in the row.
+Normalised spectrograms are shown in Section \ref{res:normalisation}.
+
+\subsection{Differencing}\label{analysis:differencing}
+
+
+Differencing uses a type of zero order predictor algorithm which estimates the local gradient of the system using a finite difference scheme. It is a measure of the difference in amplitude between one point and the next in the time series. The algorithm is:
+\begin{equation}
+    D_{i,j} = (p_{i,j+1} - p_{i,j})^{2}
+    \label{eqn:diff}
+\end{equation}
+where $D$ is the square of the difference between the neighbouring spectrogram pixels, and $p_{i,j}$ is the power of the pixel at frequency point $i$ and time point $j$. As with the normalisation procedure, frequency bands $i$ are independent. The frequency with which each value of $D$ appears can be plotted as a histogram, which highlights high values of $D$ which may correspond to an external signal. This calculation was carried out for both signals in the BAW cavity data, and the simulated Gaussian noise data. Due to the large volume of the  BAW cavity detector data it was batch-processed, after which the histogram for each batch was combined to produce a single total count. When seeking transient signals, the differencing procedure should filter out some system noise, as the gradient associated with a pulse in the data will be clearly larger than the noise signal \cite{hengFilteringCalibrationData1999}. Differencing was carried out at the resonant mode frequency (found using the PSDs in Section 4.1) and an off-mode background frequency. See Section \ref{res:differencing} for histograms of the calculated differences. 
+
+\subsection{Coincidence Analysis}\label{analysis:coincidence}
+This section describes the use of \textit{coincidence analysis} in this study. This is a technique which identifies and locates transient signals in the detected data streams, and requires two independent detectors \cite{astoneCoincidenceAnalysisGravitational2002}. We assume that GWs travel at $c$ and are therefore incident on detectors (almost) simultaneously. A \textit{coincidence} is an event which occurs in both detectors streams at the same time. As this is a phenomenon which can occur accidentally because of the noise in the detectors, we use time shifted data to calculate the background rate of coincidences, and compare this to the real-time rate. We will also compare the behaviour at the resonant and off-mode frequencies.\par
+
+Due to the disturbance of the data in Signal 0 as seen in Section \ref{data:BAW cavity data}, the two data streams used here are from Signal 1; the data was divided in two: the first 10,000 seconds labelled Signal 1a and the second half labelled Signal 1b.
+As we are searching for transient events using the power values of the spectrogram pixels, only pixel values above an energy threshold were considered. A simple filter preserved only the spectrogram pixels above this threshold value, with the remaining pixels set to zero value. \par
+The remaining non-zero data points (\textit{peaks}) are the events which are deemed to be candidates for transient signals.
+In this investigation only the time stamps of these peaks were required, hence a list containing the time position of any pixel peak was recorded. An incident transient signal may create peaks at the same time at multiple frequencies, so any duplicates were removed from the list of peak times. This procedure was carried out individually for each stream Signals 1a and 1b. \par
+To compare these peak times between the sets, a coincidence algorithm was used.
+One data stream is taken as the reference, and the other compared against it. In the reference stream, the algorithm loops through each of its peak times, and compares every peak from the other set. If a peak in the second signal lies within one value of  the  absolute time tolerance $\alpha$  then it is counted as a coincident peak ie. for an element in the reference set, $\epsilon_a$, and an element in the second set, $\epsilon_b$, then $\epsilon_b$ is returned as a coincident peak time if: 
+\begin{equation}
+    |\epsilon_b - \epsilon_a| < \alpha.
+    \label{coincidence}
+\end{equation}
+
+The coincidence value $n$ for this scenario an integer number, the number of unique peak times in the series which satisfy (\ref{coincidence}).
+\subsubsection{Time shift analysis}\label{analysis:timeshift}
+In order to find the rate of background coincidences, time shift analysis allows us to use the coincidence values at at different levels of time offset between the detectors. Again one detector is held as a reference, while the other undergoes time shifts, of length $dt$ seconds. The period of time in which we are searching for coincidences is the coincidence window, $\sigma = 2\alpha$, and should be slightly shorter than $dt$ so as not to skip over any data points, and not larger than $dt$ so that we do not count coincidences twice and have correlation. $N$ time steps are carried out, and at each stage the coincidence value is calculated as before. The average number of coincidences in the time shifted data is then the mean of these values, $\langle n \rangle$. This represents the (accidental) background coincidences in the data, as a comparison to our non-time-shifted value \cite{astoneStudyCoincidencesResonant2001}.
+
+
+We may compare the background coincidence to the theoretical, statistical number of accidental events. This is given by:
+\begin{equation}
+    \langle n \rangle = \frac{N_1 N_2 \sigma}{T}
+    \label{eqn:theoreticalEvents}
+\end{equation}
+
+				
+where $N_1$ and $N_2$ are the number of events detected in the respective detectors 1 and 2 in $T$, the total time of detection; $\sigma$ is the coincidence window in which we expect $n$ events \cite{astone1995coincidences}.
+
+If the signal under analysis contains only noise we expect the ratio of average background- to theoretical- coincidences to be close to unity. 
+
+The parameters $dt$, $\sigma$ and the resolution of the time bins in the spectrogram all influence the coincidence number, and all need to be considered to give a sensible approximation.
+In the mock demonstration of this technique, we take the number of time shifts $N$ to be $202$, spread evenly around $dt=0$ and of size 10 seconds. This is large enough to give statistically significant results, and using many more (or larger) time-shifts mean that the ends of the detectors' time sets no longer overlap and coincidences are not recorded - misleadingly reducing the number of coincidences. 
+Background coincidences were calculated for the usual cases of the BAW detector data (at resonant mode and off mode frequencies) and the Gaussian noise data. In both of these cases the signal data was divided in two, and each half considered as the independent output of a different detector. This approximates the two independent detectors required. These results are shown in Section \ref{res:coincidence}.
+
+
+\subsection{Cross - correlation}\label{analysis:crosscor}
+Finally, this area of analysis is one with which we will not use the BAW cavity detector data, as we wish to perform mock searches to demonstrate the techniques.
+The first exercise aims to show how an incident correlated signal can be detected using two independent detectors. 
+When gravitational waves pass the Earth, they are likely to be observed by multiple detectors. It can be of use to measure the cross-correlation of the output of two detectors to 1) find the time delay between detectors, and 2) search for a correlated noise-like stochastic signal. In this study we are interested in the latter, where the cross-correlation of the signals will amplify a common signal in the two data streams. The method used here to quantify this response is the \textit{Pearson $r$ cross-correlation statistic}, which measures the global synchrony between two signals. The statistic varies between -1 (perfect negatively correlated data) and 1 (perfect positive correlation), where 0 means that the data is uncorrelated. When in this section the size of the Pearson $r$ statistic is discussed, the absolute magnitude of $r$ should be assumed.
+To calculate the Pearson $r$ cross-correlation statistic, equation (\ref{pearson}) is used
+\begin{equation}
+r = \frac{\sum (x - m_x)(y-m_y)}{\sqrt{\sum(x-m_x)^2 \sum(y-m_y)^2}}
+\label{pearson}
+\end{equation}
+where $x$ and $y$ are the values of the data from the two detectors, and $m_x$ and $m_y$ are their means \cite{swinscow2002statistics}.
+\par
+To demonstrate the cross-correlation technique, we set up a dummy experiment. Consider two detectors, A and B, which are represented by two time series data sets. These are initially populated only by a background signal, made up here using Gaussian random noise which was simulated with the same parameters as the noise data in Section 2.2. This simulates electronic/thermal noise. A correlated stochastic GW signal was added to both these data sets, which was modelled also as random Gaussian noise, and was added equally to the background signal present in A and B. It was added slowly, so that its strength increased by 2\% per step over 50 steps. The Pearson $r$ was then calculated with equation  (\ref{pearson}) at each stage to determine the correlation between the detectors at each stage. The results from this are presented in Section \ref{res:crosscor}. 
+
+\subsubsection{Transient detection}\label{analysis:transient}
+This describes a method for locating a transient (burst) signal using cross-correlation. \par
+Consider the same detectors A and B as before, and their noisy output data streams.
+These time series were divided into a number of equally sized windows, and a loop calculated the Pearson $r$ between each window in stream A and each window in stream B, which gives us a square array containing values of Pearson $r$ statistic. The maximum Pearson $r$ value in this array is located and indexed, which corresponds to the region of the time series in A which has the strongest cross-correlation with the same time window in B (as the correlated signal occurs at the same time in A and B). The corresponding time window then gives us a region of time in which the pulse exists. Decreasing the size of the time windows increases the sensitivity of this method, as does increasing the pulse width. This was demonstrated using a sino-gaussian pulse signal embedded in noisy detector output. A sino-gaussian pulse is a GW waveform which may be produced by black hole mergers \cite{abadie2012all}. Find the results of cross-correlation analysis in Section \ref{res:transient}.
+
+
+
+\section{Results and discussion}\label{results}
+This section contains results corresponding to the methods explained in Section \ref{Analysis methods}, and some discussion on the effectiveness of the analysis.
+\subsection{Power spectral density}\label{res:psd}
+ The estimated PSD was calculated using Welch's method (Section \ref{analysis:PSD}). The one sided PSD is plotted against frequency for the BAW data in Figure \ref{fig:realdataPSD1side} where the resonant mode frequency is visible as the peak power, at 2-3Hz. All four of the recorded data streams from the BAW detector are included here. The identification of the resonant mode frequency directs the subsequent analysis techniques, and allows us to make comparisons between the behaviour of the resonant mode and background (off-mode) frequencies. 
+
+\begin{figure}[!htb]
+\center
+\includegraphics[width=12cm]{images/uwa_43_psd_one.png}
+\caption{One sided PSD plot against frequency, includes the four data streams in the BAW detector data. PSD calculated using Welch's method with overlap = 128 points. $X_0$ and $Y_0$ have heterodyne frequency 5.505Hz;  $X_1$ and $Y_1$ have heterodyne frequency 8.3Hz. The peaks correspond to the resonant mass detector's resonant mode frequency band.}
+\label{fig:realdataPSD1side}
+\end{figure}
+
+
+
+The two sided PSD was plotted using the complex signals 0 and 1, by adding the demodulated data streams in quadrature.  This can be seen in Figure \ref{fig:uwa_psd_2}. The combined PSD peaks at 2 to 3Hz and -2 to -3Hz are expectedly the sums of the peaks from the corresponding one sided calculations. %Why is one negative?
+The difference in magnitude between the spikes of signals 0 and 1 is therefore logical following the difference in magnitude between their amplitudes as seen in Figure \ref{fig:uwa_data}.
+
+\begin{figure}[!htb]
+\center
+\includegraphics[width=12cm]{images/uwa_43_psd_twoside.png}
+\caption{Two sided PSD plot against frequency, with complex Signals 0 and 1, from BAW cavity detector data. Calculated using Welch's method with overlap = 128 points. Signal 0 corresponds to heterodyne frequency 5.505Hz;  Signal 1 corresponds to heterodyne frequency 8.3Hz. Peaks correspond to the detector's resonant mode frequency band. Plot truncated at 0Hz due to artifacts from FFT calculation.}
+\label{fig:uwa_psd_2}
+\end{figure}
+
+% For the Gaussian noise case, we expect a constant PSD, as white noise signals have a distribution of power which is constant across frequencies.
+% In Figure \ref{fig:gaussPSD} the estimated PSD can be seen to have an approximately constant value, as white noise has a flat power spectrum. 
+
+For the Gaussian noise signal there is no resonant mode frequency as the distribution of power across frequency is constant in random white noise such as this.
+% \begin{figure}[!htb]
+% \center
+% \includegraphics[width=11cm]{images/gauss_psd_one.png}
+% \caption{One sided PSD plot against frequency for the simulated Gaussian noise signal. PSD calculated using Welch's method with window overlap = 128 points.}
+% \label{fig:gaussPSD}
+% \end{figure}
+
+
+
+%https://en.wikipedia.org/wiki/Brownian_noise#Power_spectrum
+
+
+
+
+
+
+
+\subsection{Spectrograms}\label{res:spectrograms}
+
+
+Following the method in Section \ref{analysis:spectrograms}, Spectrograms are plotted for both streams of the BAW detector data in Figure \ref{fig:realSpec}, where the the same maxima can be seen as on the PSD plots, corresponding to the resonant mode frequencies at -3 to -2Hz and 2 to 3 Hz for streams 0 and 1 respectively. It is clear that Signal 1 has a much more smooth distribution than Signal 0, as we saw in the amplitude plots. 
+The resonant mode frequencies are evident as the highlighted strip around 2 to 3Hz in (a) and -3 to -2Hz in (b). 
+
+\bigskip
+
+
+\begin{figure}[!htb]
+\centering
+\begin{subfigure}{\textwidth}
+\centering
+\includegraphics[width = 0.8\textwidth]{images/uwa_43_spec_sig0.png}
+\caption{Signal 0}
+\label{fig:left}
+\end{subfigure}
+%      \end{figure}
+% \begin{figure}\ContinuedFloat
+\begin{subfigure}{\textwidth}
+\centering
+\includegraphics[width = 0.8\textwidth]{images/uwa_43_spec_sig1.png}
+
+\caption{Signal 1}
+\label{fig:right}
+\end{subfigure}
+\caption{Spectrogram plots made from data from the BAW detector. Colourbar in dB scale. The horizontal yellow stripes are visible in both spectrograms and correspond to the higher amplitude present in the resonant frequency modes.}
+\label{fig:realSpec}
+\end{figure}
+
+
+
+\newpage
+\subsubsection{Normalisation}\label{res:normalisation}
+Spectrograms normalised according to Section \ref{analysis:normalisation} for real and Gaussian noise signals can be seen in Figure \ref{fig:realnormSpec}.
+
+\begin{figure}[!htb]
+\centering
+\begin{subfigure}{\textwidth}
+\centering
+\includegraphics[width = 0.8\textwidth]{images/uwa_43_normspec_sig0.png}
+\caption{Signal 0}
+%\label{fig:left}
+\end{subfigure}
+%   \end{figure}
+%  \begin{figure}\ContinuedFloat
+\begin{subfigure}{\textwidth}
+\centering
+\includegraphics[width = 0.8\textwidth]{images/uwa_43_normspec_sig1.png}
+
+\caption{Signal 1}
+%\label{fig:right}
+\end{subfigure}
+\caption{Normalised spectrogram plots made from data from the BAW detector. Colourbar in dB scale. The horizontal stripes at resonant mode frequencies have disappeared due to normalisation.}
+\label{fig:realnormSpec}
+\end{figure}
+
+Following normalisation procedure the maxima at the resonant modes has disappeared. The normalisation is independent for each frequency band, therefore the pixel values in each mode are normalised only around themselves. Despite normalisation, in (a) the large increase in energy recorded by the detector in the final 10,000 seconds is still visible for Signal 0, while Signal 1 appears more flat. 
+
+
+One of the aims of this study was to characterise the BAW cavity detector data from UWA, which we have observed to have a strong response in the resonant frequency mode. To investigate this sensitive region specifically, it is helpful to compare this against a background signal. Spectrogram `slices' were made, one in each data stream, corresponding to the resonant frequency mode (2 to 3Hz or -3 to -2Hz) and one at an off mode frequency band (30 to 31Hz). 
+
+
+\subsection{Differencing}\label{res:differencing}
+Differencing of the pixel values from the spectrograms for the BAW cavity detector data and the Gaussian noise data was calculated using Equation (\ref{eqn:diff}) to obtain values of $D$.
+Below are histograms showing values of  $\sqrt{D}$ against their frequency in corresponding spectrograms. Histograms are are plotted individually in the cases corresponding to the background and resonant mode (2-3Hz) frequency bands along with histograms of undifferenced data in the corresponding ranges - which are simple frequency plots of the pixel values in the spectrograms. For comparison, histograms of pixel value of the un-differenced spectrogram data are included.
+
+\begin{figure}[!htb]
+\center
+\includegraphics[width=\textwidth]{images/uwa_43_diffhist_sig0.png}
+\caption{ BAW detector data: Signal 0: (a) and (c) are histograms of the frequency $N$, of spectrogram pixels with different power values. (b) and (d) are histograms of the frequencies of values of $\sqrt{D}$, the difference in power $p$ between neighbouring pixels in time. (a) and (b) correspond to the data in the resonant frequency mode (2-3Hz) and (c) and (d) are from an off-mode frequency (30-31Hz). }
+\label{fig:diffhistsig0}
+\end{figure}
+
+\begin{figure}[!htb]
+\center
+\includegraphics[width=\textwidth]{images/uwa_43_diffhist_sig1.png}
+\caption{BAW detector data: Signal 1: (a) and (c) are histograms of the frequency $N$, of spectrogram pixels with different power values. (b) and (d) are histograms of the frequencies of values of $\sqrt{D}$, the difference in power $p$ between neighbouring pixels in time. (a) and (b) correspond to the data in the resonant frequency mode (-3 to -2Hz) and (c) and (d) are from an off-mode frequency (30 to 31Hz).}
+\label{fig:diffhistsig1}
+\end{figure}
+
+\begin{figure}[!htb]
+\center
+\includegraphics[width=0.7\textwidth]{images/gauss_diffhist.png}
+\caption{Gaussian noise signal:  (a) is a histogram of the frequency $N$, of spectrogram pixels with different power values. (b) is a histogram of the frequencies of values of $\sqrt{D}$, the difference in power $p$ between neighbouring pixels.}
+\label{fig:diffhistGauss}
+\end{figure}
+
+The flatter distribution of Signal 1 is further apparent in Figure \ref{fig:diffhistsig1}, which imitates the noise behaviour in Figure \ref{fig:diffhistGauss}. The extended tail apparent in the background frequency data distribution is likely a result of the disturbance seen in the last third of the distribution of Signal 0.
+
+As can be seen in the histograms for all cases, there is not a large visual difference between the  distribution in the differenced and undifferenced data. This may be due to the sensitivity of the differencing algorithm not being sensitive enough. As we are not satisfied with the results of differencing, the following analysis methods proceeded with data without differencing applied.
+% The next step in this investigation would be to apply a complex differencing function, as the data streams contain both real and imaginary components. This would allow the difference algorithm to now be additionally sensitive to the phase change between pixels. This complex difference scheme would look like:
+
+% \begin{equation}
+%     D^{complex}_{i,j} =  (Re(p_{i,j+1}))- Re(p_{i,j}))^{2} + (Im(p_{i,j+1}) - Im(p_{i,j}))^{2}
+% \end{equation}
+
+% In lieu of complex differencing, the following analysis methods proceeded with data without differencing applied.
+
+
+
+
+\newpage
+\newpage
+\subsection{Coincidence}\label{res:coincidence}
+The results of the time shift analysis as outlined in Section \ref{analysis:timeshift} are shown in the tables below.
+
+\begin{table}[!htb]
+\center
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+{Frequency band (Hz)}   & $n_0$ & $ \langle n_b \rangle$ & $n_t$       & ${\langle n_b \rangle}/{n_t}$ \\ \hline
+40-41               & 132   & 121.4       & 115.6 & 1.050                  \\ \hline
+30-31               & 146   & 141.1      & 130.8  & 1.078                   \\ \hline
+20-21               & 129   & 139.4         & 127.8  & 1.091                  \\ \hline
+2-3 (BAW resonant mode) & 116   & 132.2        & 120.5   & 1.097                   \\ \hline
+
+\end{tabular}
+\caption{Time shift coincidence analysis for Gaussian noise data at multiple frequency bands. $n_0$ is the number of coincident events in the window $\sigma$ with no time shift applied, $\langle n_b \rangle$ is the number of \textit{background} coincidences (averaged across all time shifts) and $n_t$ is the theoretical number of coincidences calculated using equation (\ref{eqn:theoreticalEvents}). This data was calculated with parameters: threshold spectrogram power = 7, time step $dt = 10s$, coincidence window size $\sigma = 9.98s$.
+}
+\label{gausscoinc}
+\end{table}
+
+
+For a white noise signal, we do not expect any difference in signal at 
+different frequency modes, nor should time shifting have any effect on the number of coincidences. This can be seen in Table \ref{gausscoinc}: the ratio of measured to theoretical coincidence count (final column in the table) is close to 1 and suggests that the coincidence algorithm works correctly. For the sake of symmetry the different frequency bands are included, though as expected the behaviour of these do not differ with frequency.
+
+\begin{table}[!htb]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+{Frequency band (Hz)} & $n_0$ & $ \langle n_b \rangle$ & $n_t$     & ${\langle n_b \rangle}/{n_t}$ \\ \hline
+40-41                                   & 175   & 144.3       & 132.2  & 1.091            \\ \hline
+30-31                                   & 148   & 148.3        & 135.6 & 1.094              \\ \hline
+20-21                                   & 157   & 147.2      & 131.2 & 1.122           \\ \hline
+2-3 (resonant mode)         & 108   & 114.2        & 120.4  & 0.9483            \\ \hline
+\end{tabular}
+\caption{Time shift coincidence analysis for Signal 1 of BAW cavity detector data at multiple frequency bands. $n_0$ is the number of coincident events in the window $\sigma$ with no time shift applied, $\langle n_b \rangle$ is the number of \textit{background} coincidences (averaged across all time shifts) and $n_t$ is the theoretical number of coincidences calculated using equation (\ref{eqn:theoreticalEvents}). This data was calculated with parameters: threshold spectrogram power = 7, time step $dt = 10s$, coincidence window length $\sigma = 9.98s$.
+}
+\label{bawcoinc}
+\end{table}
+
+Table \ref{bawcoinc} shows behaviour which is similar to that of the random noise data in Table \ref{gausscoinc}, which suggests that the coincidences rate between the two halves of the BAW cavity detector Signal 1 data set is no larger than accidental noise \cite{astoneStudyCoincidencesResonant2001}. This is as expected; the data streams under comparison were recorded by the detector at different times. The number of background coincidences of the BAW cavity detector data Signal 1 is ${\langle n_b \rangle} / \sigma = $11.44 per second in the resonant mode frequency band. The threshold selected is 4.844 times the standard deviation of the noise signal. 
+\par 
+The next step for this line of investigation would be to add a correlated stochastic signal to both two detector outputs and repeat the analysis. In this case one would assume to see a larger number of coincidences in the resonant mode frequency band than in the background bands, unlike what was observed in this study.
+
+
+
+\subsection{Cross-correlation}\label{res:crosscor}
+The result of slowly adding simulated stochastic GW signal to detectors (Section \ref{analysis:crosscor}) containing independent Gaussian noise can be seen in Figure \ref{fig:cross_adddata}.
+
+\begin{figure}[!htb]
+\center
+\includegraphics[width=10cm]{images/crosscorr_adddata.png}
+\caption{Calculated Pearson r cross-correlation statistic between two independent detectors increases linearly as a correlated stochastic GW signal increases in strength relative to the background Gaussian noise signal.}
+\label{fig:cross_adddata}
+\end{figure}
+
+
+ Initially, with no added GW signal, the Pearson $r$ correlation coefficient between the two detectors was roughly 0, as expected for uncorrelated random noise. The Pearson $r$ correlation coefficient then increased roughly linearly with the addition of signal, resulting in a Pearson's $r$ of about 0.8, using a stochastic  GW signal with an amplitude 2 times larger than the standard deviation of the detector noise. This shows that this method is sensitive to a correlated signal in two detectors, but more investigation is required to determine and improve the sensitivity. 
+
+% Correlated  discrete signals were also added to the experimental Gaussian and real data sets, namely: random Gaussian noise, a sinusoid, and a sino-gaussian pulse. The ratio of the Pearson r statistic for the base signal and correlated signal against that of only the base signal is calculated. This ratio depends on the relative amplitude of the input correlated signal, as expected, but in the case of the Gaussian pulse, the Pearson r also depends on the characteristics of the pulse. 
+
+\subsubsection{Transient detection}\label{res:transient}
+To demonstrate this technique, described in Section \ref{analysis:transient}, consider a Gaussian pulse signal embedded at middle time of detector data streams A and B. This is displayed in 
+Figure \ref{fig:cross-detect}, where we have a 20,000 second long detector output.
+\begin{figure}[!htb]
+\centering
+\begin{subfigure}{0.49\textwidth}
+\centering
+\includegraphics[width = \textwidth]{images/cross_locate_pulse.png}
+\caption{}
+\label{fig:gausspulse}
+\end{subfigure}
+\begin{subfigure}{0.49\textwidth}
+\centering
+\includegraphics[width = \textwidth]{images/cross_locate_sig.png}
+\caption{}
+\label{fig:cross_sig}
+\end{subfigure}
+\caption{(a) - Sino-gaussian pulse as a mock transient GW signal. Amplitude is 6.3 times the standard deviation of the detector noise(b) - One of the fabricated Gaussian noise signals with the GW pulse signal added (pulse in red). Power in arbitrary units.}
+\label{fig:cross-detect}
+\end{figure}
+
+
+Dividing the detector signals into 139 time bins each, the algorithm was able to locate the pulse to within 144 seconds, a region of 0.72\%\  the size of the total 20,000 second detection window. This accuracy window can be further reduced by increasing the number of bins and thus time resolution. The effectiveness of this technique was impacted by the relative amplitude and width of the pulse signal, which when increased makes the pulse more easily discerned from the shape of the surrounding noise, and increased the calculated Pearson r cross-correlation statistic.
+
+Another use of cross-correlation, not investigated here but used by LIGO's positive identification is \textit{matched filtering} which involves cross-correlating the detected signal with known template signal shapes \cite{abbott2016observation}. However, when searching for previously undetected signals, the wave-forms of which are unknown, this solution may be less effective \cite{yanagisawaTimeFrequencyAnalysis2019}.
+
+\newpage
+\section{Conclusion}\label{conclusion}
+In this study a number of analysis techniques were discussed and demonstrated using examples modelled with the Python language. Analysis was performed on real detector data from a bulk acoustic wave cavity ultra-high frequency gravitational wave detector at the University of Western Australia. A parallel set of data was constructed with which to compare the real data, which was a simple generated Gaussian noise signal. Initially, the power spectrum was plotted for the BAW cavity detector data and allowed us to locate the frequency band in which the detector is most sensitive and thereby narrow the band of data under inspection. Spectrograms were used to calculate the power of the signal at different time and frequency values, and these powers were analysed using differencing, coincidence and cross-correlation techniques. The methods were shown to be effective in characterising one of the components of the BAW cavity detector data as comparable to Gaussian noise while showing that the other stream displays some disturbance and is hence not suitable for this analysis. It is shown that there is much room for improvement in the sensitivity of the analysis methods, and some such steps are described. 
+
+
+
+\bibliography{bib.bib} 
+\bibliographystyle{ieeetr}
+
+\end{document}
